@@ -33,6 +33,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       'user:logout': this.onLogout,
       'page:reload': this.onReload,
       'assignee.changed': this.onAssigneeChanged,
+      'team.changed': this.onTeamChanged,
       'conversation.typing_on': this.onTypingOn,
       'conversation.typing_off': this.onTypingOff,
       'conversation.contact_changed': this.onConversationContactChange,
@@ -97,6 +98,20 @@ class ActionCableConnector extends BaseActionCableConnector {
     const { id } = payload;
     if (id) {
       this.app.$store.dispatch('updateConversation', payload);
+    }
+    this.fetchConversationStats();
+  };
+
+  onTeamChanged = payload => {
+    const { id } = payload;
+    if (id) {
+      this.app.$store.dispatch('updateConversation', payload);
+    }
+
+    const teamId = payload?.meta?.team?.id;
+    const myTeams = this.app.$store.getters['teams/getMyTeams'] || [];
+    if (teamId && myTeams.some(team => team.id === teamId)) {
+      DashboardAudioNotificationHelper.onTeamAssigned(payload);
     }
     this.fetchConversationStats();
   };

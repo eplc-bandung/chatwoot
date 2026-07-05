@@ -144,6 +144,10 @@ export class DashboardAudioNotificationHelper {
     if (audioAlertType.includes('none')) return false;
     if (audioAlertType.includes('all')) return true;
 
+    // Private notes should always ring so agents don't miss internal updates,
+    // irrespective of the conversation assignment based alert scope.
+    if (message.private) return true;
+
     const assignedToMe = isConversationAssignedToMe(
       message,
       this.currentUser.id
@@ -211,6 +215,31 @@ export class DashboardAudioNotificationHelper {
     this.playAudioAlert();
     showBadgeOnFavicon();
     this.playAudioEvery30Seconds();
+  };
+
+  // Rings when a conversation is assigned to a team the current user belongs to.
+  // Team membership is checked by the caller since it lives in the Vuex teams module.
+  onTeamAssigned = conversation => {
+    const { audioAlertType } = this.notificationConfig;
+    if (audioAlertType.includes('none')) return;
+
+    if (WindowVisibilityHelper.isWindowVisible()) {
+      // If the user is already looking at the conversation, dismiss the alert
+      if (
+        this.store.isMessageFromCurrentConversation({
+          conversation_id: conversation.id,
+        })
+      ) {
+        return;
+      }
+
+      if (this.notificationConfig.playAlertOnlyWhenHidden) {
+        return;
+      }
+    }
+
+    this.playAudioAlert();
+    showBadgeOnFavicon();
   };
 }
 

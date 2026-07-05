@@ -79,7 +79,6 @@ export default {
   },
   mounted() {
     this.initializeColorTheme();
-    this.listenToThemeChanges();
     // If user locale is set, use it; otherwise use account locale
     this.setLocale(
       this.uiSettings?.locale || window.chatwootConfig.selectedLocale
@@ -92,11 +91,7 @@ export default {
   },
   methods: {
     initializeColorTheme() {
-      setColorTheme(window.matchMedia('(prefers-color-scheme: dark)').matches);
-    },
-    listenToThemeChanges() {
-      const mql = window.matchMedia('(prefers-color-scheme: dark)');
-      mql.onchange = e => setColorTheme(e.matches);
+      setColorTheme();
     },
     setLocale(locale) {
       if (locale) {

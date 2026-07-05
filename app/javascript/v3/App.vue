@@ -7,33 +7,10 @@ export default {
     return { theme: 'light' };
   },
   mounted() {
-    this.setColorTheme();
-    this.listenToThemeChanges();
+    document.documentElement.classList.remove('dark');
     this.setLocale(window.chatwootConfig.selectedLocale);
   },
   methods: {
-    setColorTheme() {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        this.theme = 'dark';
-        document.documentElement.classList.add('dark');
-      } else {
-        this.theme = 'light';
-        document.documentElement.classList.remove('dark');
-      }
-    },
-    listenToThemeChanges() {
-      const mql = window.matchMedia('(prefers-color-scheme: dark)');
-
-      mql.onchange = e => {
-        if (e.matches) {
-          this.theme = 'dark';
-          document.documentElement.classList.add('dark');
-        } else {
-          this.theme = 'light';
-          document.documentElement.classList.remove('dark');
-        }
-      };
-    },
     setLocale(locale) {
       if (locale) {
         this.$root.$i18n.locale = locale;

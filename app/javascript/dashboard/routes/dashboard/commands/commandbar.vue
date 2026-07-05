@@ -5,7 +5,6 @@ import { useStore } from 'dashboard/composables/store';
 import { useTrack } from 'dashboard/composables';
 import { useI18n } from 'vue-i18n';
 import { useLocale } from 'shared/composables/useLocale';
-import { useAppearanceHotKeys } from 'dashboard/composables/commands/useAppearanceHotKeys';
 import { useInboxHotKeys } from 'dashboard/composables/commands/useInboxHotKeys';
 import { useGoToCommandHotKeys } from 'dashboard/composables/commands/useGoToCommandHotKeys';
 import { useBulkActionsHotKeys } from 'dashboard/composables/commands/useBulkActionsHotKeys';
@@ -35,7 +34,6 @@ const ninjakeys = ref(null);
 // So that we can track the selected snooze type and when we close the command bar
 const selectedSnoozeType = ref(null);
 
-const { goToAppearanceHotKeys } = useAppearanceHotKeys();
 const { inboxHotKeys } = useInboxHotKeys();
 const { goToCommandHotKeys } = useGoToCommandHotKeys();
 const { bulkActionsHotKeys } = useBulkActionsHotKeys();
@@ -66,7 +64,6 @@ const hotKeys = computed(() => {
     ...dynamicSnoozeActions.value,
     ...inboxHotKeys.value,
     ...goToCommandHotKeys.value,
-    ...goToAppearanceHotKeys.value,
     ...bulkActionsHotKeys.value,
     ...conversationHotKeys.value,
   ];
