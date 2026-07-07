@@ -172,6 +172,17 @@ useEmitter(CMD_RESOLVE_CONVERSATION, onCmdResolveConversation);
 
 <template>
   <div class="flex relative justify-end items-center resolve-actions">
+    <Button
+      v-if="showAdditionalActions"
+      :label="t('CONVERSATION.RESOLVE_DROPDOWN.MARK_PENDING')"
+      size="sm"
+      color="blue"
+      no-animation
+      icon="i-lucide-circle-dot-dashed"
+      class="flex-shrink-0 ltr:mr-2 rtl:ml-2"
+      :disabled="isLoading"
+      @click="() => toggleStatus(wootConstants.STATUS_TYPE.PENDING)"
+    />
     <ButtonGroup
       class="flex-shrink-0 rounded-lg shadow outline-1 outline"
       :class="!showOpenButton ? 'outline-n-container' : 'outline-transparent'"
@@ -234,18 +245,6 @@ useEmitter(CMD_RESOLVE_CONVERSATION, onCmdResolveConversation);
             icon="i-lucide-alarm-clock-minus"
             class="w-full"
             @click="() => openSnoozeModal()"
-          />
-        </WootDropdownItem>
-        <WootDropdownItem v-if="!isPending">
-          <Button
-            :label="t('CONVERSATION.RESOLVE_DROPDOWN.MARK_PENDING')"
-            ghost
-            slate
-            sm
-            start
-            icon="i-lucide-circle-dot-dashed"
-            class="w-full"
-            @click="() => toggleStatus(wootConstants.STATUS_TYPE.PENDING)"
           />
         </WootDropdownItem>
       </WootDropdownMenu>
