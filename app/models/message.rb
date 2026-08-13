@@ -326,6 +326,7 @@ class Message < ApplicationRecord
     reopen_conversation
     mark_pending_conversation_as_open_for_human_response
     set_conversation_activity
+    sync_ctwa_attribution
     dispatch_create_events
     send_reply
     execute_message_template_hooks
@@ -334,6 +335,16 @@ class Message < ApplicationRecord
 
   def update_contact_activity
     sender.update(last_activity_at: DateTime.now) if sender.is_a?(Contact)
+  end
+
+  # Denormalises Meta CTWA ad attribution onto the conversation so lead reporting
+  # (e.g. the CRM integration API) can filter on it without scanning messages.
+  # See Conversations::CtwaAttributionService. Attribution must never be able to
+  # break message ingestion, so failures are logged and swallowed.
+  def sync_ctwa_attribution
+    Conversations::CtwaAttributionService.new(self).perform
+  rescue StandardError => e
+    ChatwootExceptionTracker.new(e, account: account).capture_exception
   end
 
   def update_waiting_since

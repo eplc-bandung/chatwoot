@@ -170,6 +170,17 @@ Rails.application.routes.draw do
             end
           end
 
+          # Read-only integration API for external CRM systems.
+          # See docs/crm_integration_api.md.
+          namespace :crm do
+            resource :metadata, only: [:show]
+            resources :conversations, only: [:index, :show] do
+              scope module: :conversations do
+                resources :messages, only: [:index]
+              end
+            end
+          end
+
           resources :search, only: [:index] do
             collection do
               get :conversations
